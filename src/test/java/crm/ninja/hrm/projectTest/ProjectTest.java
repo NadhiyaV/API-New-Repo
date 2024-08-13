@@ -32,6 +32,7 @@ public class ProjectTest extends Api_BAseClass{
 		.post(iendPoint.AddProject);
 	resp.then()
 		.assertThat().statusCode(201)
+		.assertThat().time(Matchers.lessThan(7000L))
 		.log().all()
 		.spec(resspeciobj);
 	long restime=resp.time();

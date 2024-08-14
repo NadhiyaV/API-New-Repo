@@ -1,30 +1,32 @@
 package api.genericUtility;
 
 import java.io.IOException;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.mysql.cj.jdbc.Driver;
+import com.mysql.jdbc.Driver;
+
 
 /**
  * @author Nadhiya
  */
 public class DataBaseUtility {
-	static Connection conn=null;
+	static Connection conn;
 	static ResultSet rs= null;
 	static FileUtility fLib= new FileUtility();
 	/**
 	 * Connection toDB
 	 * @throws IOException 
 	 */
-	public static void getConnectiontoDB() throws IOException {
-		Driver driverRef;
+	public void getConnectiontoDB() throws IOException {
+		
 		try {
-			driverRef= new Driver();
+			 Driver driverRef= new Driver();
 			DriverManager.registerDriver(driverRef);
-			DriverManager.getConnection(fLib.getDataFromPropertiesFile("DBUrl"),
+			conn=DriverManager.getConnection(fLib.getDataFromPropertiesFile("DBUrl"),
 					fLib.getDataFromPropertiesFile("DB_Username"),
 					fLib.getDataFromPropertiesFile("DB_Password"));
 		}
@@ -32,10 +34,24 @@ public class DataBaseUtility {
 			e.printStackTrace();
 		}
 	}
-	public static void closeDB() throws SQLException {
+	
+	/**
+	 * 
+	 * @throws SQLException
+	 */
+	public void closeDB() throws SQLException {
+		try {
 		conn.close();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
-	public static ResultSet executeQuery(String query) {
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 */
+	public  ResultSet executeQuery(String query) {
 		try {
 			rs=conn.createStatement().executeQuery(query);
 			return rs;
@@ -46,6 +62,14 @@ public class DataBaseUtility {
 		
 		return rs;
 	}
+	/**
+	 * 
+	 * @param query
+	 * @param columnIndex
+	 * @param expectedData
+	 * @return
+	 * @throws SQLException
+	 */
 	public boolean executeQueryVerifyAndGetData(String query,int columnIndex,String expectedData) throws SQLException {
 		boolean flag=false;
 		rs=conn.createStatement().executeQuery(query);
